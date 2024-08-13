@@ -2,9 +2,9 @@
 
 exports[`cssToTailwind > should add bg-color class 1`] = `
 {
-  "className": "[background:var(--Primary-B-primary-b-600,#D1D1D1)] rounded-xl",
+  "className": "bg-[#D1D1D1] rounded-xl",
   "css": "div {
-    @apply [background:var(--Primary-B-primary-b-600,#D1D1D1)] rounded-xl;
+    @apply bg-[#D1D1D1] rounded-xl;
 }
     ",
 }
@@ -22,9 +22,10 @@ exports[`cssToTailwind > should convert css to tailwind 1`] = `
 
 exports[`cssToTailwind > should remove font-style: normal 1`] = `
 {
-  "className": "text-[color:var(--Primary-A-primary-a-400,#464646)] [font-family:Montserrat] text-base font-medium leading-5",
+  "className": "text-[#464646] text-base not-italic font-medium leading-5",
   "css": "div {
-    @apply text-[color:var(--Primary-A-primary-a-400,#464646)] [font-family:Montserrat] text-base font-medium leading-5;
+    @apply text-[#464646] text-base not-italic font-medium leading-5;
+    font-family: Montserrat;
 }
     ",
 }
@@ -32,9 +33,10 @@ exports[`cssToTailwind > should remove font-style: normal 1`] = `
 
 exports[`cssToTailwind > should remove inline comments 1`] = `
 {
-  "className": "text-[color:var(--Primary-A-primary-a-400,#464646)] [font-family:Montserrat] text-base font-medium leading-5",
+  "className": "text-[#464646] text-base not-italic font-medium leading-5",
   "css": "div {
-    @apply text-[color:var(--Primary-A-primary-a-400,#464646)] [font-family:Montserrat] text-base font-medium leading-5;
+    @apply text-[#464646] text-base not-italic font-medium leading-5;
+    font-family: Montserrat;
 }
     ",
 }

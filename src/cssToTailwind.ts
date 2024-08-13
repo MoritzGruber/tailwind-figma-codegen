@@ -1,12 +1,48 @@
 import { TailwindConverter } from 'css-to-tailwindcss';
 
-const converter = new TailwindConverter({
-	remInPx: 16,
-	arbitraryPropertiesIsEnabled: true
-});
+import type { Config } from 'tailwindcss';
+import { makeHex } from './helper';
 
-export const cssToTailwind = async (cssObj: Record<string, string>, ignoreFields: string[]) => {
-	if (ignoreFields.length) {
+function replaceCssVarWithFallback(cssString: string) {
+	return cssString.replace(/var\((.*?),\s*(.*?)\)/g, (_, varName: string, fallback) => {
+		return fallback.trim();
+	});
+}
+
+export function replaceRgbaWithHex(cssString: string): string {
+	const rgbaRegex = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)/g;
+
+	return cssString.replace(rgbaRegex, (match, r, g, b, a) => {
+		const hexColor = makeHex(parseInt(r, 10), parseInt(g, 10), parseInt(b, 10), parseFloat(a));
+		return hexColor;
+	});
+}
+
+export const postProcessTailwindClasses = (classes: string) => {
+	const postReplacements = [
+		['leading-[normal]', 'leading-normal'],
+		['leading-[loose]', 'leading-loose'],
+		['leading-[none]', 'leading-none'],
+		['leading-[tight]', 'leading-tight'],
+		['leading-[snug]', 'leading-snug'],
+		['leading-[relaxed]', 'leading-relaxed'],
+	];
+
+	return postReplacements.reduce((acc, [search, replace]) => acc.replace(search, replace), classes);
+};
+
+export const cssToTailwind = async (cssObj: Record<string, string>, ignoreFields?: string[], tailwindConfig?: undefined | Config) => {
+	const converter = new TailwindConverter(
+		tailwindConfig
+			? {
+					remInPx: 16,
+					arbitraryPropertiesIsEnabled: false,
+					tailwindConfig
+				}
+			: { remInPx: 16, arbitraryPropertiesIsEnabled: false }
+	);
+
+	if (ignoreFields && ignoreFields.length) {
 		for (const field of ignoreFields) {
 			if (field.includes('=')) {
 				const [key, value] = field.split('=');
@@ -22,16 +58,49 @@ export const cssToTailwind = async (cssObj: Record<string, string>, ignoreFields
 	}
 
 	const css = Object.entries(cssObj)
-		.map(([key, value]) => `${key}: ${value.replace(/\/\*.*\*\//g, '').trim()};`)
+		.map(([key, value]) => {
+			if (key == 'background') {
+				// for just colors we need to change this to background color
+				const twColorNames: any = [];
+				if (tailwindConfig && tailwindConfig.theme) {
+					tailwindConfig.theme.colors &&
+						Object.keys(tailwindConfig.theme.colors).forEach((colorName) => {
+							twColorNames.push(colorName);
+						});
+					if (tailwindConfig.theme.extend) {
+						tailwindConfig.theme.extend.colors &&
+							Object.keys(tailwindConfig.theme.extend.colors).forEach((colorName) => {
+								twColorNames.push(colorName);
+							});
+					}
+				}
+
+				if (
+					value.includes('rgb') ||
+					value.includes('rgba') ||
+					value.includes('#') ||
+					value.includes('hsl') ||
+					value.includes('hsla') ||
+					twColorNames.some((colorName: any) => value.includes(colorName))
+				) {
+					key = 'background-color';
+				}
+			}
+
+			return `${key}: ${value.replace(/\/\*.*\*\//g, '').trim()};`;
+		})
 		.join('\n');
+
+	const replacedCss = replaceRgbaWithHex(replaceCssVarWithFallback(css));
 
 	const { convertedRoot, nodes } = await converter.convertCSS(`
     div {
-        ${css}
+        ${replacedCss}
     }
     `);
+
 	const doc = {
-		className: nodes[0].tailwindClasses.join(' ').trim(),
+		className: postProcessTailwindClasses(nodes[0].tailwindClasses.join(' ').trim()),
 		css: convertedRoot.toString()
 	};
 
