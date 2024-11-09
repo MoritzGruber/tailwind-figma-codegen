@@ -1,6 +1,6 @@
 {
 	"name": "tailwind-figma-codegen",
-	"id": "1295012016362159444",
+	"id": "1405180850483924931",
 	"api": "1.0.0",
 	"main": "dist/code.js",
 	"capabilities": ["codegen", "vscode"],
@@ -8,6 +8,10 @@
 		{
 			"label": "tailwindcss",
 			"value": "css"
+		},
+		{
+			"label": "tailwind config",
+			"value": "JAVASCRIPT"
 		}
 	],
 	"enableProposedApi": false,
@@ -21,11 +25,6 @@
 			"itemType": "action",
 			"propertyName": "ignoreFields",
 			"label": "Ignore Fields"
-		},
-		{
-			"itemType": "action",
-			"propertyName": "tailwindConfig",
-			"label": "tailwindConfig"
 		}
 	]
 }

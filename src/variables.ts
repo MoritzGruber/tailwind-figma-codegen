@@ -3,7 +3,6 @@ import { makeHex, makeRgb } from './helper';
 export async function loadTextStyles() {
 	// eslint-disable-next-line
 	const textStyles = await figma.getLocalTextStylesAsync();
-	console.log(`figma textStyles`, textStyles);
 	const fontSizes: any[] = [];
 	const fontFamilies: any[] = [];
 	const finalSizes: any[] = [];
@@ -56,17 +55,14 @@ export const loadColors = async () => {
 			/* Only work with solid colors */
 			if (color) {
 				const { name } = style;
-				if (name.includes('primary')) {
-					console.log(` color ${name}`, { color, style, opacity });
-				}
 				let alpha = undefined;
 				if (opacity != 1 && isNaN(opacity) === false) {
 					alpha = Math.round(100 * opacity) / 100;
-				} 
+				}
 				const { r, g, b } = makeRgb(color);
-					const value = makeHex(r, g, b, alpha);
-					const result = { name, value };
-					colors.push(result);
+				const value = makeHex(r, g, b, alpha);
+				const result = { name, value };
+				colors.push(result);
 			} else if (gradientStops && gradientStops.length > 0) {
 				/* Add gradients as a suggestion */
 				gradientStops.forEach((stop: any) => {

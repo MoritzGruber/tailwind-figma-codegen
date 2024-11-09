@@ -8,3 +8,5 @@ No login or other AI stuff.
 CREDITS: 
 This plugin is a fork of [css-tailwind-codegen](https://github.com/imranbarbhuiya/figma-tailwindcss) by [imranbarbhuiya]
 and also some code from [figma-tailwindcss](https://github.com/jan-dh/figma-tailwindcss/) of [jan-dh] is used. 
+
+The changes made are in order to support custom color variables, also with rgba values. 

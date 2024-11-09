@@ -9,10 +9,10 @@
 		"test": "vitest"
 	},
 	"bugs": {
-		"url": "https://github.com/imranbarbhuiya/figma-tailwindcss/issues"
+		"url": "https://github.com/MoritzGruber/tailwind-figma-codegen/issues"
 	},
-	"homepage": "https://github.com/imranbarbhuiya/figma-tailwindcss#readme",
-	"author": "imranbarbhuiya",
+	"homepage": "https://github.com/MoritzGruber/tailwind-figma-codegen#readme",
+	"author": "MoritzGruber & imranbarbhuiya",
 	"license": "MIT",
 	"dependencies": {
 		"css-to-tailwindcss": "^1.0.5"

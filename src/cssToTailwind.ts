@@ -21,11 +21,14 @@ export function replaceRgbaWithHex(cssString: string): string {
 export const postProcessTailwindClasses = (classes: string) => {
 	const postReplacements = [
 		['leading-[normal]', 'leading-normal'],
+		['leading-[1.5]', 'leading-normal'],
+		['leading-[150%]', 'leading-normal'],
 		['leading-[loose]', 'leading-loose'],
 		['leading-[none]', 'leading-none'],
 		['leading-[tight]', 'leading-tight'],
 		['leading-[snug]', 'leading-snug'],
 		['leading-[relaxed]', 'leading-relaxed'],
+		['tracking-[0px]', 'tracking-normal'],
 	];
 
 	return postReplacements.reduce((acc, [search, replace]) => acc.replace(search, replace), classes);
@@ -91,13 +94,16 @@ export const cssToTailwind = async (cssObj: Record<string, string>, ignoreFields
 		})
 		.join('\n');
 
+	console.log(` css`, css);
 	const replacedCss = replaceRgbaWithHex(replaceCssVarWithFallback(css));
+	console.log(` replacedCss`, replacedCss);
 
 	const { convertedRoot, nodes } = await converter.convertCSS(`
     div {
         ${replacedCss}
     }
     `);
+	console.log(` convertedRoot.toString()`, convertedRoot.toString());
 
 	const doc = {
 		className: postProcessTailwindClasses(nodes[0].tailwindClasses.join(' ').trim()),
